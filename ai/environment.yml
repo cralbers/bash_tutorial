@@ -1,0 +1,8 @@
+name: bash_tut
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.8
+  - r-base=4.4.2
+  - pip=24.3.1
