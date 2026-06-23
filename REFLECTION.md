@@ -75,4 +75,4 @@ It should finish without that error."
 
 ## Time to complete A vs. B (rough estimate is fine).
 
-Completing the manual portion took me about 20 minutes, and completing the AI portion took me about 10 minutes. 
+Completing the manual portion took me about 30 minutes, and completing the AI portion took me about 20 minutes. 
