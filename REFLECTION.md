@@ -1,19 +1,19 @@
 # Assignment 1 reflection
 
-### Which env file is more correct, yours, or the AI's? What's actually different?
+## Which env file is more correct, yours, or the AI's? What's actually different?
 
 Both are objectively correct, but include different packages. The AI's is more generally correct, because it doesn't include build strings, while the one I generated does. The main difference is that I chose to create a conda environment first, and then install jupyter into that environment to be able to run notebook kernels specifically within that environment, so jupyterlab and its dependencies are included in my env file, and it is not in the AI one. 
 
 
-### What did the AI add that you forgot? What did the AI invent (hallucinated package, wrong version, nonexistent flag)?
+## What did the AI add that you forgot? What did the AI invent (hallucinated package, wrong version, nonexistent flag)?
 
 The AI added in code to the setup_env.sh file that accounts for the possibility that a conda environment with the same name could already exist. Everytime the AI setup_env.sh code is run, any existing env with that name is purged, and a clean install from the .yml takes place. My setup file did not account for that possibility. The AI didn't seem to invent anything out of place. 
 
-### Did the AI's setup_env.sh actually run end-to-end on a clean shell?
+## Did the AI's setup_env.sh actually run end-to-end on a clean shell?
 
 The AI's setup_env file did successfully create the conda env in a clean shell, but didn't initially activate the environment or install the pip requirements. For some reason, it took a long time for the new environment to be created, but it did eventually run. Initially, the code to activate the environment and install the pip reqs didn't work because the script was set to error on unbound variables, and the script to import the conda activate command didn't set a value for the $CONDA_BACKUP_CLANGXX variable, causing the script to crash. After conversing with the agent to temporarily turn off the option that treats unset variables as errors, activate the environment, and then reactivate that option. After this correction, the script ran successfully on a clean shell.
 
-#### Cursor chat excerpt
+### Cursor chat excerpt
 "`CONDA_BACKUP_CLANGXX: unbound variable` (the real error)
 
 ```text
@@ -31,8 +31,6 @@ So this is a **clash between strict bash mode and conda’s activation hooks**, 
 
 **Good news:** your env still built fine (`Executing transaction: done`), and you successfully activated `bash_tut` afterward — your prompt shows `(bash_tut)`.
 
----
-
 ### What to do now
 
 You can keep going:
@@ -45,9 +43,6 @@ bash hello.sh
 ```
 
 If you want `setup_env.sh` to finish without that warning, the usual fix is to temporarily turn off `set -u` around `conda activate`, or drop `-u` from the script. I can patch `setup_env.sh` if you want.
-
-
-**Cursor**
 
 Fixing `setup_env.sh`: `set -u` conflicts with conda's activation hooks when `CONDA_BACKUP_CLANGXX` isn't set.
 
@@ -78,6 +73,6 @@ bash setup_env.sh
 
 It should finish without that error."
 
-### Time to complete A vs. B (rough estimate is fine).
+## Time to complete A vs. B (rough estimate is fine).
 
 Completing the manual portion took me about 20 minutes, and completing the AI portion took me about 10 minutes. 
