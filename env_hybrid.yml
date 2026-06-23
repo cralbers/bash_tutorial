@@ -1,8 +1,0 @@
-name: bash_tut
-channels:
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies:
-  - jupyterlab
-prefix: /Users/coraalbers/anaconda3/envs/bash_tut

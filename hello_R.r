@@ -1,3 +1,0 @@
-cat("Hello world from R!\n")
-
-
