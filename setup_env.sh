@@ -11,7 +11,9 @@ else
 fi
 
 eval "$(conda shell.bash hook)"
+set +u
 conda activate bash_tut
+set -u
 pip install -r requirements.txt
 
 echo "Environment 'bash_tut' is ready. Run: conda activate bash_tut"
