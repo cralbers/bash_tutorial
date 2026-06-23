@@ -14,50 +14,69 @@ The AI added in code to the setup_env.sh file that accounts for the possibility 
 The AI's setup_env file did successfully create the conda env in a clean shell, but didn't initially activate the environment or install the pip requirements. For some reason, it took a long time for the new environment to be created, but it did eventually run. Initially, the code to activate the environment and install the pip reqs didn't work because the script was set to error on unbound variables, and the script to import the conda activate command didn't set a value for the $CONDA_BACKUP_CLANGXX variable, causing the script to crash. After conversing with the agent to temporarily turn off the option that treats unset variables as errors, activate the environment, and then reactivate that option. After this correction, the script ran successfully on a clean shell.
 
 #### Cursor chat excerpt
-CONDA_BACKUP_CLANGXX: unbound variable (the real error)
+"`CONDA_BACKUP_CLANGXX: unbound variable` (the real error)
+
+```text
 /Users/coraalbers/anaconda3/etc/conda/deactivate.d/deactivate_clangxx_osx-arm64.sh: line 65: CONDA_BACKUP_CLANGXX: unbound variable
-This came from setup_env.sh using set -u (via set -euo pipefail).
+```
 
-set -u means: using an unset variable is an error.
-When conda switches environments, it runs hook scripts like deactivate_clangxx_osx-arm64.sh.
-That script references $CONDA_BACKUP_CLANGXX without checking whether it’s set.
-With set -u, that becomes: unbound variable.
-So this is a clash between strict bash mode and conda’s activation hooks, not a problem with your environment.yml.
+This came from **`setup_env.sh` using `set -u`** (via `set -euo pipefail`).
 
-Good news: your env still built fine (Executing transaction: done), and you successfully activated bash_tut afterward — your prompt shows (bash_tut).
+- `set -u` means: using an unset variable is an error.
+- When conda switches environments, it runs hook scripts like `deactivate_clangxx_osx-arm64.sh`.
+- That script references `$CONDA_BACKUP_CLANGXX` without checking whether it’s set.
+- With `set -u`, that becomes: **unbound variable**.
 
-What to do now
+So this is a **clash between strict bash mode and conda’s activation hooks**, not a problem with your `environment.yml`.
+
+**Good news:** your env still built fine (`Executing transaction: done`), and you successfully activated `bash_tut` afterward — your prompt shows `(bash_tut)`.
+
+---
+
+### What to do now
+
 You can keep going:
+
 ```bash
 conda activate bash_tut
 python hello.py
 Rscript hello.R
 bash hello.sh
 ```
-If you want setup_env.sh to finish without that warning, the usual fix is to temporarily turn off set -u around conda activate, or drop -u from the script. I can patch setup_env.sh if you want.
 
-Fixing setup_env.sh: set -u conflicts with conda's activation hooks when CONDA_BACKUP_CLANGXX isn't set.
+If you want `setup_env.sh` to finish without that warning, the usual fix is to temporarily turn off `set -u` around `conda activate`, or drop `-u` from the script. I can patch `setup_env.sh` if you want.
 
-```bash
-eval "$(conda shell.bash hook)"
-set +u
-conda activate bash_tut
-set -u
-```
-What it means: Conda’s macOS hook script (deactivate_clangxx_osx-arm64.sh) uses $CONDA_BACKUP_CLANGXX to restore compiler settings when leaving an environment. That variable is only set if clang was changed during activation — often it isn’t, so the variable is unset.
 
-Your script has set -u, which tells bash to error on any unset variable. When conda runs that hook during conda activate, bash hits an unset $CONDA_BACKUP_CLANGXX and prints:
+**Cursor**
 
+Fixing `setup_env.sh`: `set -u` conflicts with conda's activation hooks when `CONDA_BACKUP_CLANGXX` isn't set.
+
+
+**What it means:** Conda’s macOS hook script (`deactivate_clangxx_osx-arm64.sh`) uses `$CONDA_BACKUP_CLANGXX` to restore compiler settings when leaving an environment. That variable is only set if clang was changed during activation — often it isn’t, so the variable is **unset**.
+
+Your script has `set -u`, which tells bash to error on any unset variable. When conda runs that hook during `conda activate`, bash hits an unset `$CONDA_BACKUP_CLANGXX` and prints:
+
+```text
 CONDA_BACKUP_CLANGXX: unbound variable
-It’s a conda hook + strict bash interaction, not a broken environment. Your bash_tut env was created fine.
+```
 
-Fix applied: setup_env.sh now temporarily disables -u around conda activate:
+It’s a conda hook + strict bash interaction, not a broken environment. Your `bash_tut` env was created fine.
+
+**Fix applied:** `setup_env.sh` now temporarily disables `-u` around `conda activate`:
 
 ```bash
 set +u
 conda activate bash_tut
 set -u
 ```
+
+Re-run with:
+
+```bash
+bash setup_env.sh
+```
+
+It should finish without that error."
 
 ### Time to complete A vs. B (rough estimate is fine).
 
