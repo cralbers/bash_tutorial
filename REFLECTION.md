@@ -31,7 +31,7 @@ So this is a **clash between strict bash mode and conda’s activation hooks**, 
 
 **Good news:** your env still built fine (`Executing transaction: done`), and you successfully activated `bash_tut` afterward — your prompt shows `(bash_tut)`.
 
-### What to do now
+#### What to do now
 
 You can keep going:
 
